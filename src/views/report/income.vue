@@ -100,7 +100,7 @@
 </template>
 
 <script>
-  import { listProduct } from '@/api/product'
+  // import { listProduct } from '@/api/product'
   import { listCatlog } from '@/api/catlog'
   export default {
     data() {
@@ -147,14 +147,14 @@
         })
       },
       fetchData() {
-        listProduct({ pageNum: this.pageNum, pageSize: this.pageSize, json: this.searchForm }).then(response => {
-          this.total = response.data.total
-          this.pageNum = Number(response.data.pageNum)
-          this.productList = response.data.data
-          this.listLoading = false
-        }).catch(() => {
-          this.loading = false
-        })
+        // listProduct({ pageNum: this.pageNum, pageSize: this.pageSize, json: this.searchForm }).then(response => {
+        //   this.total = response.data.total
+        //   this.pageNum = Number(response.data.pageNum)
+        //   this.productList = response.data.data
+        //   this.listLoading = false
+        // }).catch(() => {
+        //   this.loading = false
+        // })
       },
       onSizeChange(val) {
         this.pageNum = val

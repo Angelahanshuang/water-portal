@@ -7,11 +7,10 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="onSearch()">查询</el-button>
-        <el-button type="primary" icon="el-icon-plus" @click="onAdd()">添加</el-button>
       </el-form-item>
     </el-form>
     <!--表格-->
-    <el-table :data="channelList" v-loading="listLoading" element-loading-text="拼命加载中" style="width: 100%;">
+    <el-table :data="deviceList" v-loading="listLoading" element-loading-text="拼命加载中" style="width: 100%;">
       
      <!-- 详情 -->
       <el-table-column type="expand">
@@ -19,17 +18,17 @@
           <el-form label-position="left" inline class="table-expand">
             <el-row>
               <el-col :span="18">
-                <el-form-item label="渠道名称">
-                   <span>{{ props.row.channelName}}</span>
+                <el-form-item label="设备SN">
+                   <span>{{ props.row.devSn}}</span>
                  </el-form-item>
-                 <el-form-item label="对账邮箱">
-                   <span>{{ props.row.channelEmail }}</span>
+                 <el-form-item label="设备地址">
+                   <span>{{ props.row.devAddress }}</span>
                  </el-form-item>
-                 <el-form-item label="佣金比例">
-                   <span>{{ props.row.backRate }}</span>
+                 <el-form-item label="联系人">
+                   <span>{{ props.row.contractName }}</span>
                  </el-form-item>
-                 <el-form-item label="设备数量">
-                   <span>{{ props.row.devNum }}</span>
+                 <el-form-item label="联系电话">
+                   <span>{{ props.row.contractTel }}</span>
                  </el-form-item>
               </el-col>
             </el-row>
@@ -40,21 +39,23 @@
       <!--列表-->
       <el-table-column type="index" width="50">
       </el-table-column>
-      <el-table-column prop="channelName" label="渠道名称" >
+      <el-table-column prop="id" label="设备编号" >
       </el-table-column>
-      <el-table-column prop="channelEmail" label="对账邮箱"  width="150">
-      </el-table-column>
-      <el-table-column prop="backRate" label="佣金比例"  width="150">
-      </el-table-column>
-      <el-table-column prop="devNum" label="设备数量"  width="150">
-      </el-table-column>
-      <el-table-column prop="operation" label="操作" align="center" width="300">
+      <el-table-column prop="userType" label="用户类型"  width="150">
         <template slot-scope="scope" >
-         <el-button size="small" type="primary"  
-         @click="onDevices(scope.row.id)">明细</el-button>
-         <el-button size="small" type="primary" icon="el-icon-edit"  
-         @click="onEdit(scope.row.id)">编辑</el-button>
+          {{scope.row.userType | userTypeFilter}}
         </template>
+      </el-table-column>
+      <el-table-column prop="operType" label="使用方式"  width="150">
+        <template slot-scope="scope" >
+          {{scope.row.operType | operTypeFilter}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="userName" label="用户名称"  width="150">
+      </el-table-column>
+      <el-table-column prop="contractName" label="联系人"  width="150">
+      </el-table-column>
+      <el-table-column prop="contractTel" label="联系电话"  width="150">
       </el-table-column>
     </el-table>
 
@@ -73,7 +74,7 @@
 </template>
 
 <script>
-  import { listChannel } from '@/api/channel'
+  import { listDevice } from '@/api/channel'
   export default {
     data() {
       return {
@@ -84,15 +85,24 @@
         pageNum: Number(this.$route.query.pNum || 1),
         total: 0,
         pageSize: 10,
-        channelList: null
+        deviceList: null
       }
     },
     filters: {
-      statusFilter(status) {
-        return status === '01' ? '上架' : '下架'
+      userTypeFilter(status) {
+        if (status === '01') {
+          return '企业'
+        } else if (status === '02') {
+          return '商业'
+        } else if (status === '03') {
+          return '家庭'
+        } else if (status === '04') {
+          return '合租'
+        }
+        return '企业'
       },
-      enoughStatusFilter(status) {
-        return status === '01' ? '充足' : '售罄'
+      operTypeFilter(status) {
+        return status === '01' ? '按时' : '按流量'
       }
     },
     created() {
@@ -100,10 +110,10 @@
     },
     methods: {
       fetchData() {
-        listChannel({ pageNum: this.pageNum, pageSize: this.pageSize, channelName: this.searchForm.channelName }).then(response => {
+        listDevice({ pageNum: this.pageNum, pageSize: this.pageSize, channelId: this.$route.params.id }).then(response => {
           this.total = response.data.total
           this.pageNum = Number(response.data.pageNum)
-          this.channelList = response.data.data
+          this.deviceList = response.data.data
           this.listLoading = false
         }).catch(() => {
           this.loading = false
@@ -120,15 +130,6 @@
       onSearch() {
         this.pageNum = 1
         this.fetchData()
-      },
-      onAdd() {
-        this.$router.push({ path: '/channel/add' })
-      },
-      onEdit(id) {
-        this.$router.push({ path: '/channel/edit/' + id, query: { pNum: this.pageNum }})
-      },
-      onDevices(id) {
-        this.$router.push({ path: '/channel/devices/' + id, query: { pNum: this.pageNum }})
       }
     }
   }

@@ -44,31 +44,17 @@ export const constantRouterMap = [
     }]
   },
   {
-    path: '/reserve',
+    path: '/booking',
     component: Layout,
-    name: 'reserve',
-    redirect: '/reserve/list',
+    name: 'booking',
+    redirect: '/booking/list',
     meta: { title: '预约管理', icon: 'shop' },
     children: [
       {
         path: 'list',
-        name: 'reservelist',
-        component: () => import('@/views/reserve/list'),
-        meta: { title: '预约列表', module: 'reserve', icon: 'nav-list' }
-      },
-      {
-        path: 'add',
-        name: 'reserveadd',
-        hidden: true,
-        component: () => import('@/views/reserve/add'),
-        meta: { title: '添加桌', module: 'reserve', icon: 'nav-list' }
-      },
-      {
-        path: 'edit/:id/:status',
-        name: 'reserveedit',
-        hidden: true,
-        component: () => import('@/views/reserve/edit'),
-        meta: { title: '修改桌', module: 'reserve', icon: 'nav-list' }
+        name: 'bookinglist',
+        component: () => import('@/views/booking/list'),
+        meta: { title: '预约列表', module: 'booking', icon: 'nav-list' }
       }
     ]
   },
@@ -93,11 +79,18 @@ export const constantRouterMap = [
         meta: { title: '添加渠道', module: 'channel', icon: 'nav-list' }
       },
       {
-        path: 'edit/:id/:orderby/:status/:name',
+        path: 'edit/:id',
         name: 'channeledit',
         hidden: true,
         component: () => import('@/views/channel/edit'),
         meta: { title: '修改渠道', module: 'channel', icon: 'nav-list' }
+      },
+      {
+        path: 'devices/:id',
+        name: 'devices',
+        hidden: true,
+        component: () => import('@/views/channel/devices'),
+        meta: { title: '渠道设备', module: 'channel', icon: 'nav-list' }
       }
     ]
   },

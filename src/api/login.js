@@ -3,7 +3,7 @@ import sha1 from 'js-sha1'
 
 export function login(username, password, verifycode) {
   return request({
-    url: '/api/passport/storeLogin',
+    url: '/api/passport/platformLogin',
     method: 'post',
     params: {
       loginName: username,

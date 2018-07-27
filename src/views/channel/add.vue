@@ -1,31 +1,32 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="productForm" label-width="120px">
-      <el-form-item label="商品类型">
-        <el-select v-model="productForm.productType" clearable placeholder="商品类型">
-          <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
-          </el-option>
-        </el-select>
+    <el-form ref="form" :model="channelForm" label-width="120px">
+      <el-form-item label="渠道名称">
+        <el-input v-model="channelForm.channelName"></el-input>
       </el-form-item>
-      <el-form-item label="库存状态">
-        <el-select v-model="productForm.enoughStatus" clearable placeholder="库存状态">
-          <el-option v-for="item in es_options" :key="item.value" :label="item.label" :value="item.value"></el-option>
-        </el-select>
+      <el-form-item label="联系人">
+        <el-input  v-model="channelForm.contractName"></el-input>
       </el-form-item>
-      <el-form-item label="商品名称">
-        <el-input v-model="productForm.productName"></el-input>
+      <el-form-item label="电话">
+        <el-input v-model="channelForm.contractTel"></el-input>
       </el-form-item>
-      <el-form-item label="商品描述">
-        <el-input type="textarea" v-model="productForm.productDesc"></el-input>
+      <el-form-item label="佣金比例">
+        <el-input-number :precision="0" :min="0" :max="100" v-model="channelForm.backRate"></el-input-number> %
       </el-form-item>
-      <el-form-item label="商品原价">
-        <el-input-number v-model="productForm.productAmount" :precision="2" :max="10000"></el-input-number>
+      <el-form-item label="对账单接收邮箱">
+        <el-input  v-model="channelForm.channelEmail"></el-input>
       </el-form-item>
-      <el-form-item label="商品销售价">
-        <el-input-number v-model="productForm.productSalesAmount" :precision="2" :max="10000"></el-input-number>
+      <el-form-item label="收款账户名称">
+        <el-input v-model="channelForm.accountName"></el-input>
       </el-form-item>
-      <el-form-item label="商品图片">
-        <img-upload :imgUrl="productForm.productPic" @setImgUrl='setImgUrl'></img-upload>
+      <el-form-item label="银行账号">
+        <el-input v-model="channelForm.bankcardNo"></el-input>
+      </el-form-item>
+      <el-form-item label="开户行">
+        <el-input v-model="channelForm.bankName"></el-input>
+      </el-form-item>
+      <el-form-item label="开户行号">
+        <el-input v-model="channelForm.bankCode"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button :loading="loading"  type="primary" @click="onSubmit()">确定</el-button>
@@ -36,56 +37,38 @@
 </template>
 
 <script>
-  import imgUpload from '@/components/Upload'
-  import { addProduct } from '@/api/product'
-  import { listCatlog } from '@/api/catlog'
+  import { addChannel } from '@/api/channel'
   export default {
     data() {
       return {
-        options: null,
-        es_options: [
-          { value: '01', label: '充足' },
-          { value: '02', label: '售罄' }
-        ],
-        productForm: {
-          productName: '',
-          productType: '',
-          productDesc: '',
-          productAmount: 10.00,
-          productSalesAmount: 10.00,
-          productPic: '',
-          enoughStatus: '01'
+        channelForm: {
+          channelName: '',
+          contractName: '',
+          contractTel: '',
+          backRate: 10.00,
+          channelEmail: '',
+          accountName: '',
+          bankcardNo: '',
+          bankName: '',
+          bankCode: ''
         },
         loading: false
       }
     },
     created() {
-      this.fetchCatlogData()
-    },
-    components: {
-      imgUpload
     },
     methods: {
-      fetchCatlogData() {
-        listCatlog({ pageNum: 1, pageSize: 100 }).then(response => {
-          this.options = response.data.data
-        }).catch(() => {
-        })
-      },
-      setImgUrl(url) {
-        this.productForm.productPic = url
-      },
       onSubmit() {
         this.loading = true
-        addProduct({ json: this.productForm }).then(() => {
+        addChannel({ json: this.channelForm }).then(() => {
           this.loading = false
-          this.$router.push({ path: '/product/list' })
+          this.$router.push({ path: '/channel/list' })
         }).catch(() => {
           this.loading = false
         })
       },
       onCancel() {
-        this.$router.push({ path: '/product/list' })
+        this.$router.push({ path: '/channel/list' })
       }
     }
   }
