@@ -95,31 +95,24 @@ export const constantRouterMap = [
     ]
   },
   {
-    path: '/merchant',
+    path: '/installuser',
     component: Layout,
-    name: 'merchant',
-    redirect: '/merchant/list',
+    name: 'installuser',
+    redirect: '/installuser/list',
     meta: { title: '用户管理', icon: 'order' },
     children: [
       {
         path: 'list',
-        name: 'merchantlist',
-        component: () => import('@/views/merchant/list'),
-        meta: { title: '用户列表', module: 'merchant', icon: 'nav-list' }
-      },
-      {
-        path: 'add',
-        name: 'merchantadd',
-        hidden: true,
-        component: () => import('@/views/merchant/add'),
-        meta: { title: '添加用户', module: 'merchant', icon: 'nav-list' }
+        name: 'installuserlist',
+        component: () => import('@/views/installuser/list'),
+        meta: { title: '用户列表', module: 'installuser', icon: 'nav-list' }
       },
       {
         path: 'edit/:id',
-        name: 'merchantedit',
+        name: 'installuseredit',
         hidden: true,
-        component: () => import('@/views/merchant/edit'),
-        meta: { title: '修改用户', module: 'merchant', icon: 'nav-list' }
+        component: () => import('@/views/installuser/edit'),
+        meta: { title: '修改用户', module: 'installuser', icon: 'nav-list' }
       }
     ]
   },

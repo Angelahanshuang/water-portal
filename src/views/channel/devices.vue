@@ -1,12 +1,8 @@
 <template>
   <div class="app-container">
     <!-- 查询条件区 -->
-    <el-form :inline="true" :model="searchForm" size="small">
-      <el-form-item>
-        <el-input  placeholder="渠道名称" clearable v-model="searchForm.channelName"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="onSearch()">查询</el-button>
+    <el-form :inline="true" :model="channelForm" size="small">
+      <el-form-item :label="channelForm.channelName">
       </el-form-item>
     </el-form>
     <!--表格-->
@@ -74,12 +70,12 @@
 </template>
 
 <script>
-  import { listDevice } from '@/api/channel'
+  import { listDevice, detailChannel } from '@/api/channel'
   export default {
     data() {
       return {
         listLoading: true,
-        searchForm: {
+        channelForm: {
           channelName: ''
         },
         pageNum: Number(this.$route.query.pNum || 1),
@@ -106,9 +102,16 @@
       }
     },
     created() {
+      this.fecthDetail()
       this.fetchData()
     },
     methods: {
+      fecthDetail() {
+        detailChannel({ channelId: this.$route.params.id }).then(response => {
+          this.channelForm = response.data
+        }).catch(() => {
+        })
+      },
       fetchData() {
         listDevice({ pageNum: this.pageNum, pageSize: this.pageSize, channelId: this.$route.params.id }).then(response => {
           this.total = response.data.total

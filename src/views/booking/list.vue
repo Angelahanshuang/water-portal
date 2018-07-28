@@ -3,7 +3,7 @@
     <!-- 查询条件区 -->
     <el-form :inline="true" :model="searchForm" size="small">
       <el-form-item>
-        <el-input  placeholder="姓名或手机号" v-model="searchForm.info"></el-input>
+        <el-input  placeholder="姓名或手机号" v-model="searchForm.info" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-date-picker v-model="searchForm.times" :default-time="['00:00:00','23:59:59']" type="datetimerange" range-separator="至" start-placeholder="开始日期" value-format="yyyyMMddHHmmss" end-placeholder="结束日期"></el-date-picker>

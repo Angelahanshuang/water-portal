@@ -3,34 +3,36 @@
     <!-- 查询条件区 -->
     <el-form :inline="true" :model="searchForm" size="small">
       <el-form-item>
-        <el-select v-model="searchForm.status" clearable placeholder="用户类型">
+        <el-input  placeholder="用户名称" v-model="searchForm.userName" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-select v-model="searchForm.userType" clearable placeholder="用户类型">
           <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="onSearch()">查询</el-button>
-        <el-button type="primary" icon="el-icon-plus" @click="onAdd()">添加</el-button>
       </el-form-item>
     </el-form>
     <!--表格-->
-    <el-table :data="catlogList" v-loading="listLoading" element-loading-text="拼命加载中" style="width: 100%;">
+    <el-table :data="installuserList" v-loading="listLoading" element-loading-text="拼命加载中" style="width: 100%;">
       <!--列表-->
       <el-table-column type="index" width="50">
       </el-table-column>
-      <el-table-column prop="name" label="用户名称" width="150">
+      <el-table-column prop="userName" label="用户名称" width="150">
       </el-table-column>
-      <el-table-column prop="status" label="用户类型"  width="150">
+      <el-table-column prop="userType" label="用户类型"  width="150">
         <template slot-scope="scope" >
-          {{scope.row.status | statusFilter}}
+          {{scope.row.userType | userTypeFilter}}
         </template>
       </el-table-column>
-      <el-table-column prop="id" label="对账邮箱">
+      <el-table-column prop="userEmail" label="对账邮箱">
       </el-table-column>
-      <el-table-column prop="productCount" label="姓名" width="150">
+      <el-table-column prop="contractName" label="姓名" width="150">
       </el-table-column>
-      <el-table-column prop="orderBy" label="电话" width="150">
+      <el-table-column prop="contractTel" label="电话" width="150">
       </el-table-column>
-      <el-table-column prop="orderBy" label="设备数量" width="150">
+      <el-table-column prop="devNum" label="设备数量" width="150">
       </el-table-column>
       <el-table-column prop="operation" label="操作" align="center" width="150">
         <template slot-scope="scope" >
@@ -55,27 +57,39 @@
 </template>
 
 <script>
-  import { listCatlog } from '@/api/catlog'
+  import { listInstalluser } from '@/api/installuser'
   export default {
     data() {
       return {
         options: [
-          { value: '01', label: '有效' },
-          { value: '02', label: '无效' }
+          { value: '01', label: '企业' },
+          { value: '02', label: '商业' },
+          { value: '03', label: '家庭' },
+          { value: '04', label: '合租' }
         ],
         listLoading: true,
         searchForm: {
-          status: ''
+          userName: '',
+          userType: ''
         },
         pageNum: Number(this.$route.query.pNum || 1),
         total: 0,
         pageSize: 10,
-        catlogList: null
+        installuserList: null
       }
     },
     filters: {
-      statusFilter(status) {
-        return status === '01' ? '有效' : '无效'
+      userTypeFilter(status) {
+        if (status === '01') {
+          return '企业'
+        } else if (status === '02') {
+          return '商业'
+        } else if (status === '03') {
+          return '家庭'
+        } else if (status === '04') {
+          return '合租'
+        }
+        return '企业'
       }
     },
     created() {
@@ -83,10 +97,10 @@
     },
     methods: {
       fetchData() {
-        listCatlog({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.searchForm.status }).then(response => {
+        listInstalluser({ pageNum: this.pageNum, pageSize: this.pageSize, json: this.searchForm }).then(response => {
           this.total = response.data.total
           this.pageNum = Number(response.data.pageNum)
-          this.catlogList = response.data.data
+          this.installuserList = response.data.data
           this.listLoading = false
         }).catch(() => {
           this.loading = false
@@ -104,11 +118,8 @@
         this.pageNum = 1
         this.fetchData()
       },
-      onAdd() {
-        this.$router.push({ path: '/catlog/add' })
-      },
       onEdit(row) {
-        this.$router.push({ path: '/catlog/edit/' + row.id + '/' + row.orderBy + '/' + row.status + '/' + row.name, query: { pNum: this.pageNum }})
+        this.$router.push({ path: '/installuser/edit/' + row.id, query: { pNum: this.pageNum }})
       }
     }
   }
