@@ -11,7 +11,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input  placeholder="渠道名称" clearable v-model="searchForm.channelName"></el-input>
+        <el-input  placeholder="用户名称" clearable v-model="searchForm.userName"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="onSearch()">查询</el-button>
@@ -42,25 +42,20 @@
       <!--列表-->
       <el-table-column type="index" width="50">
       </el-table-column>
-      <el-table-column prop="channelName" label="渠道名称">
+      <el-table-column prop="userName" label="用户名称"  width="280">
       </el-table-column>
-      <el-table-column prop="amount" label="收入金额"  width="150">
+      <el-table-column prop="amount" label="应收金额"  width="150">
       </el-table-column>
-      <el-table-column prop="backRate" label="佣金比例"  width="150">
-      </el-table-column>
-      <el-table-column prop="amount" label="结算金额"  width="150">
-      </el-table-column>
-      <el-table-column prop="status" label="结算状态"  width="150">
+      <el-table-column prop="status" label="销账状态"  width="150">
         <template slot-scope="scope" >
         {{scope.row.status | statusFilter}}
         </template>
       </el-table-column>
-      <el-table-column prop="updateTime" :formatter="dateFormat" label="结算时间" width="150">
+      <el-table-column prop="updateTime" :formatter="dateFormat" label="销账时间" >
       </el-table-column>
       <el-table-column prop="operation" label="操作" align="center" width="150">
         <template slot-scope="scope" >
-         <el-button v-if="scope.row.status === '01'" size="small" type="primary"
-         @click="onEdit(scope.row)">完成结算</el-button>
+         <el-button v-if="scope.row.status === '01'" size="small" type="primary" @click="onEdit(scope.row)">完成付款</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -74,7 +69,7 @@
       style="text-align:right;">
     </el-pagination>
     <el-dialog
-      title="填写结算信息"
+      title="填写付款信息"
       :visible.sync="dialogVisible"
       width="40%">
       <el-form  :model="editForm" label-width="80px" size="small">
@@ -97,7 +92,7 @@
 </template>
 
 <script>
-  import { listStatement, operStatement } from '@/api/financial'
+  import { listBill, operBill } from '@/api/financial'
   import { formatDate } from '@/utils/date'
   export default {
     data() {
@@ -112,13 +107,13 @@
         },
         dialogVisible: false,
         options: [
-          { value: '01', label: '未结算' },
-          { value: '02', label: '已结算' }
+          { value: '01', label: '未销账' },
+          { value: '02', label: '已销账' }
         ],
         listLoading: false,
         searchForm: {
           calMonth: '',
-          channelName: '',
+          userName: '',
           status: ''
         },
         editForm: {
@@ -141,11 +136,10 @@
         return formatDate(date)
       },
       statusFilter(status) {
-        return status === '01' ? '未结算' : '已结算'
+        return status === '01' ? '未销账' : '已销账'
       }
     },
     created() {
-      // this.fetchData()
     },
     methods: {
       dateFormat(row, column) {
@@ -159,7 +153,7 @@
         return formatDate(date)
       },
       fetchData() {
-        listStatement({ pageNum: this.pageNum, pageSize: this.pageSize, json: this.searchForm }).then(response => {
+        listBill({ pageNum: this.pageNum, pageSize: this.pageSize, json: this.searchForm }).then(response => {
           this.total = response.data.total
           this.pageNum = Number(response.data.pageNum)
           this.billList = response.data.data
@@ -185,7 +179,7 @@
         this.dialogVisible = true
       },
       onConform() {
-        operStatement({ id: this.editForm.id, bankName: this.editForm.bankName, bankStatement: this.editForm.bankStatement, remark: this.editForm.remark }).then(response => {
+        operBill({ id: this.editForm.id, bankName: this.editForm.bankName, bankStatement: this.editForm.bankStatement, remark: this.editForm.remark }).then(response => {
         }).catch(() => {
           this.fetchData()
         })

@@ -15,11 +15,3 @@ export function operBooking(params) {
     params: params
   })
 }
-
-export function oexportBooking(params) {
-  return request({
-    url: '/api/booking/export',
-    method: 'get',
-    params: params
-  })
-}

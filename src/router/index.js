@@ -121,7 +121,7 @@ export const constantRouterMap = [
     component: Layout,
     name: 'report',
     redirect: '/report/income',
-    meta: { title: '报表', icon: 'order' },
+    meta: { title: '查询统计', icon: 'order' },
     children: [
       {
         path: 'income',
@@ -145,9 +145,9 @@ export const constantRouterMap = [
         meta: { title: '渠道佣金结算', module: 'financial', icon: 'money' }
       },
       {
-        path: 'receivable',
-        name: 'receivable',
-        component: () => import('@/views/financial/receivable'),
+        path: 'listbill',
+        name: 'listbill',
+        component: () => import('@/views/financial/listbill'),
         meta: { title: '商业用户应收', module: 'financial', icon: 'money' }
       }
     ]
