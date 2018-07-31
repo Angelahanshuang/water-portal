@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="installUserForm" label-width="120px">
+    <el-form :model="installUserForm" :rules="formRules" ref="installUserForm" label-width="120px">
       <el-form-item label="用户名称">
         <el-input v-model="installUserForm.userName" disabled></el-input>
       </el-form-item>
@@ -9,7 +9,7 @@
           <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="对账邮箱">
+      <el-form-item prop="userEmail" label="对账邮箱">
         <el-input v-model="installUserForm.userEmail" clearable></el-input>
       </el-form-item>
       <el-form-item label="姓名">
@@ -52,6 +52,12 @@
           devNum: 0,
           devIds: []
         },
+        formRules: {
+          userEmail: [
+            { required: true, message: '对账邮箱不能为空', trigger: 'blur' },
+            { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+          ]
+        },
         loading: false
       }
     },
@@ -69,12 +75,18 @@
         })
       },
       onSubmit() {
-        this.loading = true
-        editInstalluser({ id: this.$route.params.id, userEmail: this.installUserForm.userEmail }).then(() => {
-          this.loading = false
-          this.$router.push({ path: '/installuser/list' })
-        }).catch(() => {
-          this.loading = false
+        this.$refs.installUserForm.validate(valid => {
+          if (valid) {
+            this.loading = true
+            editInstalluser({ id: this.$route.params.id, userEmail: this.installUserForm.userEmail }).then(() => {
+              this.loading = false
+              this.$router.push({ path: '/installuser/list' })
+            }).catch(() => {
+              this.loading = false
+            })
+          } else {
+            return false
+          }
         })
       },
       onCancel() {

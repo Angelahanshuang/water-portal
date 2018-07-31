@@ -1,31 +1,31 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="channelForm" label-width="120px">
-      <el-form-item label="渠道名称">
+    <el-form :model="channelForm" :rules="formRules" ref="channelForm" label-width="120px">
+       <el-form-item prop="channelName" label="渠道名称">
         <el-input v-model="channelForm.channelName"></el-input>
       </el-form-item>
-      <el-form-item label="联系人">
+      <el-form-item  prop="contractName" label="联系人">
         <el-input  v-model="channelForm.contractName"></el-input>
       </el-form-item>
-      <el-form-item label="电话">
+      <el-form-item prop="contractTel" label="电话">
         <el-input v-model="channelForm.contractTel"></el-input>
       </el-form-item>
-      <el-form-item label="佣金比例">
+      <el-form-item prop="backRate" label="佣金比例">
         <el-input-number :precision="0" :min="0" :max="100" v-model="channelForm.backRate"></el-input-number> %
       </el-form-item>
-      <el-form-item label="对账单接收邮箱">
+      <el-form-item prop="channelEmail" label="对账单接收邮箱">
         <el-input  v-model="channelForm.channelEmail"></el-input>
       </el-form-item>
-      <el-form-item label="收款账户名称">
+      <el-form-item prop="accountName" label="收款账户名称">
         <el-input v-model="channelForm.accountName"></el-input>
       </el-form-item>
-      <el-form-item label="银行账号">
+      <el-form-item prop="bankcardNo" label="银行账号">
         <el-input v-model="channelForm.bankcardNo"></el-input>
       </el-form-item>
-      <el-form-item label="开户行">
+      <el-form-item prop="bankName" label="开户行">
         <el-input v-model="channelForm.bankName"></el-input>
       </el-form-item>
-      <el-form-item label="开户行号">
+      <el-form-item prop="bankCode" label="开户行号">
         <el-input v-model="channelForm.bankCode"></el-input>
       </el-form-item>
       <el-form-item>
@@ -52,6 +52,20 @@
           bankName: '',
           bankCode: ''
         },
+        formRules: {
+          channelName: [{ required: true, message: '渠道名称不能为空', trigger: 'blur' }],
+          contractName: [{ required: true, message: '联系人不能为空', trigger: 'blur' }],
+          contractTel: [{ required: true, message: '联系电话不能为空', trigger: 'blur' }],
+          backRate: [{ required: true, message: '佣金比例不能为空', trigger: 'blur' }],
+          channelEmail: [
+            { required: true, message: '对账单接收邮箱不能为空', trigger: 'blur' },
+            { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+          ],
+          accountName: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
+          bankcardNo: [{ required: true, message: '银行账号不能为空', trigger: 'blur' }],
+          bankName: [{ required: true, message: '开户行不能为空', trigger: 'blur' }],
+          bankCode: [{ required: true, message: '开户行号不能为空', trigger: 'blur' }]
+        },
         loading: false
       }
     },
@@ -63,32 +77,37 @@
         this.loading = true
         detailChannel({ channelId: this.$route.params.id }).then(response => {
           this.channelForm = response.data
+          this.channelForm.backRate = this.channelForm.backRate * 100
           this.loading = false
         }).catch(() => {
           this.loading = false
         })
       },
       onSubmit() {
-        this.loading = true
-
-        var val = {
-          id: this.$route.params.id,
-          channelName: this.channelForm.channelName,
-          contractName: this.channelForm.contractName,
-          contractTel: this.channelForm.contractTel,
-          backRate: this.channelForm.backRate,
-          channelEmail: this.channelForm.channelEmail,
-          accountName: this.channelForm.accountName,
-          bankcardNo: this.channelForm.bankcardNo,
-          bankName: this.channelForm.bankName,
-          bankCode: this.channelForm.bankCode
-        }
-
-        editChannel({ json: val }).then(() => {
-          this.loading = false
-          this.$router.push({ path: '/channel/list' })
-        }).catch(() => {
-          this.loading = false
+        this.$refs.channelForm.validate(valid => {
+          if (valid) {
+            this.loading = true
+            var val = {
+              id: this.$route.params.id,
+              channelName: this.channelForm.channelName,
+              contractName: this.channelForm.contractName,
+              contractTel: this.channelForm.contractTel,
+              backRate: this.channelForm.backRate,
+              channelEmail: this.channelForm.channelEmail,
+              accountName: this.channelForm.accountName,
+              bankcardNo: this.channelForm.bankcardNo,
+              bankName: this.channelForm.bankName,
+              bankCode: this.channelForm.bankCode
+            }
+            editChannel({ json: val }).then(() => {
+              this.loading = false
+              this.$router.push({ path: '/channel/list' })
+            }).catch(() => {
+              this.loading = false
+            })
+          } else {
+            return false
+          }
         })
       },
       onCancel() {

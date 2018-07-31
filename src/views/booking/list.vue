@@ -71,7 +71,7 @@
       </el-table-column>
       <el-table-column prop="operation" label="操作" align="center" width="150">
         <template slot-scope="scope" >
-         <el-button v-if="scope.row.status === '01'" size="small" type="primary" icon="el-icon-edit" 
+         <el-button v-if="scope.row.status === '01'" size="small" type="primary" 
          @click="onEdit(scope.row)">编辑预约时间</el-button>
         </template>
       </el-table-column>
@@ -92,8 +92,8 @@
       title="填写上门安装时间"
       :visible.sync="dialogVisible"
       width="40%">
-      <el-form  :model="editForm" label-width="80px" size="small">
-        <el-form-item label="时间">
+      <el-form  :model="editForm" :rules="formRules" ref="editForm" label-width="80px" size="small">
+        <el-form-item prop="installTime" label="时间">
           <el-date-picker
             v-model="editForm.installTime" type="datetime" value-format="yyyyMMddHHmmss" placeholder="选择日期时间">
           </el-date-picker>
@@ -126,6 +126,9 @@
           id: '',
           installTime: '',
           remark: ''
+        },
+        formRules: {
+          installTime: [{ required: true, message: '安装时间不能为空', trigger: 'blur' }]
         },
         searchForm: {
           info: '',
@@ -214,12 +217,17 @@
         document.body.appendChild(ifrim)
       },
       onConform() {
-        operBooking({ json: this.editForm }).then(response => {
-          this.fetchData()
-        }).catch(() => {
+        this.$refs.editForm.validate(valid => {
+          if (valid) {
+            operBooking({ json: this.editForm }).then(response => {
+              this.fetchData()
+            }).catch(() => {
+            })
+            this.dialogVisible = false
+          } else {
+            return false
+          }
         })
-
-        this.dialogVisible = false
       }
     }
   }

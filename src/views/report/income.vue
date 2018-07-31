@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <!-- 查询条件区 -->
-    <el-form :inline="true" :model="searchForm" size="small">
-      <el-form-item>
+    <el-form :inline="true" :model="searchForm" :rules="formRules" ref="searchForm" size="small">
+      <el-form-item prop="calMonth">
         <el-date-picker required v-model="searchForm.calMonth" value-format="yyyyMM" :picker-options="pickerOptions" type="month" placeholder="选择月"> </el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -90,6 +90,9 @@
           userType: '',
           userName: ''
         },
+        formRules: {
+          calMonth: [{ required: true, message: '月份不能为空', trigger: 'blur' }]
+        },
         pageNum: Number(this.$route.query.pNum || 1),
         total: 0,
         pageSize: 10,
@@ -121,13 +124,19 @@
         })
       },
       fetchData() {
-        listIncome({ pageNum: this.pageNum, pageSize: this.pageSize, json: this.searchForm }).then(response => {
-          this.total = response.data.total
-          this.pageNum = Number(response.data.pageNum)
-          this.incomeList = response.data.data
-          this.listLoading = false
-        }).catch(() => {
-          this.loading = false
+        this.$refs.searchForm.validate(valid => {
+          if (valid) {
+            listIncome({ pageNum: this.pageNum, pageSize: this.pageSize, json: this.searchForm }).then(response => {
+              this.total = response.data.total
+              this.pageNum = Number(response.data.pageNum)
+              this.incomeList = response.data.data
+              this.listLoading = false
+            }).catch(() => {
+              this.loading = false
+            })
+          } else {
+            return false
+          }
         })
       },
       onSizeChange(val) {
@@ -143,15 +152,21 @@
         this.fetchData()
       },
       onExport() {
-        var filter = JSON.stringify(this.searchForm)
-        var url = process.env.BASE_API + '/api/finance/exportPlatformIncome?json=' + filter
-        var ifrim = document.createElement('iframe')
-        ifrim.style.display = 'none'
-        ifrim.src = url
-        ifrim.onload = function() {
-          document.body.removeChild(ifrim)
-        }
-        document.body.appendChild(ifrim)
+        this.$refs.searchForm.validate(valid => {
+          if (valid) {
+            var filter = JSON.stringify(this.searchForm)
+            var url = process.env.BASE_API + '/api/finance/exportPlatformIncome?json=' + filter
+            var ifrim = document.createElement('iframe')
+            ifrim.style.display = 'none'
+            ifrim.src = url
+            ifrim.onload = function() {
+              document.body.removeChild(ifrim)
+            }
+            document.body.appendChild(ifrim)
+          } else {
+            return false
+          }
+        })
       }
     }
   }

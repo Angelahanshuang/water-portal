@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <!-- 查询条件区 -->
-    <el-form :inline="true" :model="searchForm" size="small">
-      <el-form-item>
+    <el-form :inline="true" :model="searchForm" :rules="formRules" ref="searchForm" size="small">
+      <el-form-item prop="calMonth">
         <el-date-picker v-model="searchForm.calMonth" value-format="yyyyMM" :picker-options="pickerOptions" type="month" placeholder="选择月"> </el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -77,11 +77,11 @@
       title="填写结算信息"
       :visible.sync="dialogVisible"
       width="40%">
-      <el-form  :model="editForm" label-width="80px" size="small">
-        <el-form-item label="银行名称">
+      <el-form  :model="editForm" :rules="eformRules" ref="editForm" label-width="80px" size="small">
+        <el-form-item prop="bankName" label="银行名称">
           <el-input  placeholder="银行名称" v-model="editForm.bankName"></el-input>
         </el-form-item>
-        <el-form-item label="流水单号">
+        <el-form-item prop="bankStatement" label="流水单号">
           <el-input  placeholder="流水单号" v-model="editForm.bankStatement"></el-input>
         </el-form-item>
         <el-form-item label="备注">
@@ -121,11 +121,18 @@
           channelName: '',
           status: ''
         },
+        formRules: {
+          calMonth: [{ required: true, message: '月份不能为空', trigger: 'blur' }]
+        },
         editForm: {
           id: '',
           bankName: '',
           bankStatement: '',
           remark: ''
+        },
+        eformRules: {
+          bankName: [{ required: true, message: '银行名称不能为空', trigger: 'blur' }],
+          bankStatement: [{ required: true, message: '流水单号不能为空', trigger: 'blur' }]
         },
         pageNum: Number(this.$route.query.pNum || 1),
         total: 0,
@@ -159,13 +166,19 @@
         return formatDate(date)
       },
       fetchData() {
-        listStatement({ pageNum: this.pageNum, pageSize: this.pageSize, json: this.searchForm }).then(response => {
-          this.total = response.data.total
-          this.pageNum = Number(response.data.pageNum)
-          this.billList = response.data.data
-          this.listLoading = false
-        }).catch(() => {
-          this.loading = false
+        this.$refs.searchForm.validate(valid => {
+          if (valid) {
+            listStatement({ pageNum: this.pageNum, pageSize: this.pageSize, json: this.searchForm }).then(response => {
+              this.total = response.data.total
+              this.pageNum = Number(response.data.pageNum)
+              this.billList = response.data.data
+              this.listLoading = false
+            }).catch(() => {
+              this.loading = false
+            })
+          } else {
+            return false
+          }
         })
       },
       onSizeChange(val) {
@@ -185,11 +198,17 @@
         this.dialogVisible = true
       },
       onConform() {
-        operStatement({ id: this.editForm.id, bankName: this.editForm.bankName, bankStatement: this.editForm.bankStatement, remark: this.editForm.remark }).then(response => {
-        }).catch(() => {
-          this.fetchData()
+        this.$refs.editForm.validate(valid => {
+          if (valid) {
+            operStatement({ id: this.editForm.id, bankName: this.editForm.bankName, bankStatement: this.editForm.bankStatement, remark: this.editForm.remark }).then(response => {
+              this.fetchData()
+            }).catch(() => {
+            })
+            this.dialogVisible = false
+          } else {
+            return false
+          }
         })
-        this.dialogVisible = false
       }
     }
   }

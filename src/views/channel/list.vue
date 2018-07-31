@@ -50,10 +50,8 @@
       </el-table-column>
       <el-table-column prop="operation" label="操作" align="center" width="300">
         <template slot-scope="scope" >
-         <el-button size="small" type="primary"  
-         @click="onDevices(scope.row.id)">明细</el-button>
-         <el-button size="small" type="primary" icon="el-icon-edit"  
-         @click="onEdit(scope.row.id)">编辑</el-button>
+         <el-button size="small" type="primary" @click="onDevices(scope.row.id)">明细</el-button>
+         <el-button size="small" type="primary" @click="onEdit(scope.row.id)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>

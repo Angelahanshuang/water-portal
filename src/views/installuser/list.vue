@@ -36,7 +36,7 @@
       </el-table-column>
       <el-table-column prop="operation" label="操作" align="center" width="150">
         <template slot-scope="scope" >
-         <el-button size="small" type="primary" icon="el-icon-edit"  
+         <el-button size="small" type="primary"  
          @click="onEdit(scope.row)">编辑</el-button>
         </template>
       </el-table-column>
