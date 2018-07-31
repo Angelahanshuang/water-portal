@@ -47,6 +47,9 @@
       <el-table-column prop="amount" label="收入金额"  width="150">
       </el-table-column>
       <el-table-column prop="backRate" label="佣金比例"  width="150">
+        <template slot-scope="scope" >
+        {{scope.row.backRate | persentFilter}}
+        </template>
       </el-table-column>
       <el-table-column prop="amount" label="结算金额"  width="150">
       </el-table-column>
@@ -149,6 +152,9 @@
       },
       statusFilter(status) {
         return status === '01' ? '未结算' : '已结算'
+      },
+      persentFilter(num) {
+        return num * 100 + '%'
       }
     },
     created() {

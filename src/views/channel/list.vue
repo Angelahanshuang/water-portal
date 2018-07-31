@@ -26,7 +26,7 @@
                    <span>{{ props.row.channelEmail }}</span>
                  </el-form-item>
                  <el-form-item label="佣金比例">
-                   <span>{{ props.row.backRate }}</span>
+                   <span>{{ props.row.backRate | persentFilter }}</span>
                  </el-form-item>
                  <el-form-item label="设备数量">
                    <span>{{ props.row.devNum }}</span>
@@ -45,6 +45,9 @@
       <el-table-column prop="channelEmail" label="对账邮箱"  width="150">
       </el-table-column>
       <el-table-column prop="backRate" label="佣金比例"  width="150">
+        <template slot-scope="scope" >
+        {{scope.row.backRate | persentFilter}}
+        </template>
       </el-table-column>
       <el-table-column prop="devNum" label="设备数量"  width="150">
       </el-table-column>
@@ -86,11 +89,8 @@
       }
     },
     filters: {
-      statusFilter(status) {
-        return status === '01' ? '上架' : '下架'
-      },
-      enoughStatusFilter(status) {
-        return status === '01' ? '充足' : '售罄'
+      persentFilter(num) {
+        return num * 100 + '%'
       }
     },
     created() {

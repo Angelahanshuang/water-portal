@@ -92,7 +92,7 @@
               channelName: this.channelForm.channelName,
               contractName: this.channelForm.contractName,
               contractTel: this.channelForm.contractTel,
-              backRate: this.channelForm.backRate,
+              backRate: this.channelForm.backRate / 100,
               channelEmail: this.channelForm.channelEmail,
               accountName: this.channelForm.accountName,
               bankcardNo: this.channelForm.bankcardNo,

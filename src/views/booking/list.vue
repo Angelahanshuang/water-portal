@@ -41,8 +41,8 @@
                  <el-form-item label="状态">
                    <span>{{ props.row.status | statusFilter }}</span>
                  </el-form-item>
-                 <el-form-item label="上门时间">
-                   <span>{{ props.row.installTime | formatDate }}</span>
+                 <el-form-item label="预约时间">
+                   <span>{{ props.row.createTime | formatDate }}</span>
                  </el-form-item>
                  <el-form-item label="备注">
                    <span>{{ props.row.remark }}</span>
@@ -72,7 +72,7 @@
       <el-table-column prop="operation" label="操作" align="center" width="150">
         <template slot-scope="scope" >
          <el-button v-if="scope.row.status === '01'" size="small" type="primary" 
-         @click="onEdit(scope.row)">编辑预约时间</el-button>
+         @click="onEdit(scope.row)">处理</el-button>
         </template>
       </el-table-column>
     </el-table>

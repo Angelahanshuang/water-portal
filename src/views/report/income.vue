@@ -43,6 +43,9 @@
       <el-table-column prop="channelName" label="渠道"  width="150">
       </el-table-column>
       <el-table-column prop="backRate" label="佣金比例"  width="150">
+        <template slot-scope="scope" >
+          {{scope.row.backRate | persentFilter}}
+        </template>
       </el-table-column>
       <el-table-column prop="realAmount" label="实际收入"  width="150">
       </el-table-column>
@@ -78,10 +81,10 @@
         },
         channel_list: [],
         usertype_options: [
-          { value: '01', label: '企业' },
-          { value: '02', label: '商业' },
-          { value: '03', label: '家庭' },
-          { value: '04', label: '合租' }
+          { value: '01', label: '企业用户' },
+          { value: '02', label: '商业用户' },
+          { value: '03', label: '家庭用户' },
+          { value: '04', label: '合租用户' }
         ],
         listLoading: false,
         searchForm: {
@@ -102,15 +105,18 @@
     filters: {
       userTypeFilter(status) {
         if (status === '01') {
-          return '企业'
+          return '企业用户'
         } else if (status === '02') {
-          return '商业'
+          return '商业用户'
         } else if (status === '03') {
-          return '家庭'
+          return '家庭用户'
         } else if (status === '04') {
-          return '合租'
+          return '合租用户'
         }
-        return '企业'
+        return '企业用户'
+      },
+      persentFilter(num) {
+        return num * 100 + '%'
       }
     },
     created() {
