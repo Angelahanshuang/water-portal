@@ -116,7 +116,7 @@
         return '企业用户'
       },
       persentFilter(num) {
-        return num * 100 + '%'
+        return (num * 100).toFixed(2) + '%'
       }
     },
     created() {
