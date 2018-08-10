@@ -48,7 +48,7 @@ export const constantRouterMap = [
     component: Layout,
     name: 'booking',
     redirect: '/booking/list',
-    meta: { title: '预约管理', icon: 'shop' },
+    meta: { title: '预约管理', icon: 'order' },
     children: [
       {
         path: 'list',
@@ -95,6 +95,21 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/device',
+    component: Layout,
+    name: 'device',
+    redirect: '/device/list',
+    meta: { title: '设备管理', icon: 'order' },
+    children: [
+      {
+        path: 'list',
+        name: 'devicelist',
+        component: () => import('@/views/device/list'),
+        meta: { title: '设备列表', module: 'device', icon: 'nav-list' }
+      }
+    ]
+  },
+  {
     path: '/installuser',
     component: Layout,
     name: 'installuser',
@@ -128,6 +143,12 @@ export const constantRouterMap = [
         name: 'reportincome',
         component: () => import('@/views/report/income'),
         meta: { title: '收入查询', module: 'report', icon: 'nav-list' }
+      },
+      {
+        path: 'uselist',
+        name: 'reportuselist',
+        component: () => import('@/views/report/uselist'),
+        meta: { title: '使用查询', module: 'report', icon: 'nav-list' }
       }
     ]
   },
